@@ -1,5 +1,3 @@
-﻿
-#ps script
 
 
 #get domain controllers
