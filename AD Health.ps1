@@ -1,4 +1,4 @@
-
+﻿
 
 #get domain controllers
 $dcpath = Get-ADDomain | select -expandproperty domaincontrollerscontainer
@@ -23,7 +23,7 @@ foreach ($dc in $domaincontrollers) {
       if ($primarydns.count -eq 1) {
          if ($primarydns -eq "127.0.0.1") {
              write-host -ForegroundColor red "There are multiple domain controllers in this environment but the primary DNS server for $dc is 127.0.0.1"
-        }#if
+        }#if 
       }#if
         if ($primarydns[0]-eq "127.0.0.1") {
              write-host -ForegroundColor red "There are multiple domain controllers in this environment but the primary DNS server for $dc is 127.0.0.1"
@@ -70,7 +70,7 @@ foreach ($dc in $domaincontrollers) {
 
     }#foreach
 
-#endregion
+#endregion 
 
 #region ping and dns resolution, basic test
 
@@ -85,7 +85,7 @@ try {
 $errormessage = $_.exception
 if ($errormessage -like "*hostname*") {
 write-host -ForegroundColor red "DNS resolution failed, check network settings"
-}#if
+}#if 
 
 elseif ($errormessage -like "*due to lack of resources*") {
 write-host -foregroundcolor red "Basic ping failed, check network settings."
@@ -136,16 +136,16 @@ foreach ($test in $coltests) {
     foreach ($dc in $domaincontrollers) {
             try {
                 $currenttest = Test-NetConnection -ComputerName $dc -Port $test.port -ErrorAction Stop | select -ExpandProperty tcptestsucceeded
-            }#try
-             catch {
+            }#try 
+             catch { 
                 Write-Host -ForegroundColor red "Something is wrong with the local network settings, could not run test"
              }#catch
 
 
         if ($currenttest -eq $false) {
 
-
-            Write-Host -ForegroundColor Red "The $($test.testname) test failed for $dc"
+ 
+            Write-Host -ForegroundColor Red "The $($test.testname) test failed for $dc" 
 
         }#if
 
@@ -157,7 +157,7 @@ foreach ($test in $coltests) {
 
 }#foreach
 
-#endregion
+#endregion  
 
 #region check for shares
 foreach ($dc in $domaincontrollers) {
@@ -181,17 +181,16 @@ write-host -ForegroundColor red "Unable to find the SYSVOL share on $dc"
 #endregion
 
 #region ad partition replication
-
-$adrepresults = Get-ADReplicationPartnerMetadata -Target * -Partition * | select server,partition,partner,consecutivereplicationfailures,lastreplicationsuccess
-$adrepresultsnumbers = $adrepresults | select  -ExpandProperty consecutivereplicationfailures
-foreach ($number in $adrepresultsnumbers) {
-    if ($number -gt 1) {
-        write-host -ForegroundColor Red "There has been at least 1 consecutive replication failure in AD"
-    }#if
-     elseif ($number -eq 0) {
-     write-host -ForegroundColor Cyan "There has not been 1 consecutive replication failure in AD since last reboot"
-    }#elseif
-}#foreach
+    $adrepresults = Get-ADReplicationPartnerMetadata -Target * -Partition * | select server,partition,partner,consecutivereplicationfailures,lastreplicationsuccess
+    #$adrepresultsnumbers = $adrepresults | select  -ExpandProperty consecutivereplicationfailures
+    foreach ($singlerepresult in $adrepresults) {
+        if ($number.consecutivereplicationfailures -gt 1) {
+            write-host -ForegroundColor Red "There has been at least 1 consecutive replication failure in AD"
+        }#if
+         elseif ($singlerepresult.consecutivereplicationfailures -eq 0) {
+         write-host -ForegroundColor Cyan "There has not been 1 consecutive replication failure on $($singlerepresult.server)"
+        }#elseif
+    }#foreach
 #endregion
 
 #region check ad site replication time
@@ -204,4 +203,4 @@ foreach ($sitereptime in $sitereptimeall) {
         write-host -ForegroundColor Cyan "The site replication link $($sitereptime.name) has a replication time of atleast 30 minutes"
      }#elseif
 }#foreach
-#endregion
+#endregion 
