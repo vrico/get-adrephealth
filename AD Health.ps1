@@ -36,37 +36,37 @@ foreach ($dc in $domaincontrollers) {
 #region check dns services
 
     foreach ($dc in $domaincontrollers) {
-    $dnsserver = get-service -ComputerName $dc -name DNS | select -ExpandProperty status
-    if ($dnsserver -eq "Running") {
-    write-host -ForegroundColor cyan "DNS Server is running on $dc"
-    }
-    elseif ($dnsserver -like "*stop*") {
-    write-host -ForegroundColor red "DNS Server is NOT Running on $dc !"
-    }
+        $dnsserver = get-service -ComputerName $dc -name DNS | select -ExpandProperty status
+        if ($dnsserver -eq "Running") {
+            write-host -ForegroundColor cyan "DNS Server is running on $dc"
+        }
+        elseif ($dnsserver -like "*stop*") {
+            write-host -ForegroundColor red "DNS Server is NOT Running on $dc !"
+        }
 
-    $dnsclient = get-service -computername $dc -name Dnscache | select -ExpandProperty status
-    if ($dnsclient -eq "Running") {
-    write-host -ForegroundColor cyan "DNS client service is running on $dc"
-    }
-    elseif ($dnsclient -like "*stop*") {
-    write-host -ForegroundColor Red "DNS client is NOT Running on $dc !"
-    }
+        $dnsclient = get-service -computername $dc -name Dnscache | select -ExpandProperty status
+        if ($dnsclient -eq "Running") {
+            write-host -ForegroundColor cyan "DNS client service is running on $dc"
+        }
+        elseif ($dnsclient -like "*stop*") {
+            write-host -ForegroundColor Red "DNS client is NOT Running on $dc !"
+        }
 
-        $ntds = get-service -computername $dc -name ntds | select -ExpandProperty status
-    if ($ntds -eq "Running") {
-    write-host -ForegroundColor cyan "NTDS service is running on $dc"
-    }
-    elseif ($ntds -like "*stop*") {
-    write-host -ForegroundColor Red "NTDS service is NOT Running on $dc !"
-    }
+            $ntds = get-service -computername $dc -name ntds | select -ExpandProperty status
+        if ($ntds -eq "Running") {
+          write-host -ForegroundColor cyan "NTDS service is running on $dc"
+        }
+        elseif ($ntds -like "*stop*") {
+         write-host -ForegroundColor Red "NTDS service is NOT Running on $dc !"
+        }
 
-        $netlogon = get-service -computername $dc -name netlogon | select -ExpandProperty status
-    if ($netlogon -eq "Running") {
-    write-host -ForegroundColor cyan "NETLOGON service is running on $dc"
-    }
-    elseif ($netlogon -like "*stop*") {
-    write-host -ForegroundColor Red "NETLOGON service is NOT Running on $dc !"
-    }
+            $netlogon = get-service -computername $dc -name netlogon | select -ExpandProperty status
+        if ($netlogon -eq "Running") {
+            write-host -ForegroundColor cyan "NETLOGON service is running on $dc"
+        }
+        elseif ($netlogon -like "*stop*") {
+         write-host -ForegroundColor Red "NETLOGON service is NOT Running on $dc !"
+        }
 
     }#foreach
 
@@ -76,23 +76,19 @@ foreach ($dc in $domaincontrollers) {
 
 foreach ($dc in $domaincontrollers) {
 
-try {
- Test-Connection -ComputerName $dc -Count 2 -ErrorAction Stop | Out-Null
- Write-Host -ForegroundColor cyan "Basic ping and DNS resolution test passed for $dc"
-} catch {
-
-
-$errormessage = $_.exception
-if ($errormessage -like "*hostname*") {
-write-host -ForegroundColor red "DNS resolution failed, check network settings"
-}#if 
-
-elseif ($errormessage -like "*due to lack of resources*") {
-write-host -foregroundcolor red "Basic ping failed, check network settings."
-}#if
-
-}# catch
-
+    try {
+     Test-Connection -ComputerName $dc -Count 2 -ErrorAction Stop | Out-Null
+     Write-Host -ForegroundColor cyan "Basic ping and DNS resolution test passed for $dc"
+    }#try
+    catch {
+        $errormessage = $_.exception
+        if ($errormessage -like "*hostname*") {
+            write-host -ForegroundColor red "DNS resolution failed, check network settings"
+        }#if 
+        elseif ($errormessage -like "*due to lack of resources*") {
+            write-host -foregroundcolor red "Basic ping failed, check network settings."
+        }#if
+    }# catch
 }#foreach
 
 #endregion
@@ -143,20 +139,13 @@ foreach ($test in $coltests) {
 
 
         if ($currenttest -eq $false) {
-
- 
             Write-Host -ForegroundColor Red "The $($test.testname) test failed for $dc" 
-
         }#if
-
-        elseif ($currenttest) {
-
-        Write-Host -ForegroundColor cyan "The $($test.testname) passed for $dc"
-        }#elseif
+            elseif ($currenttest) {
+                Write-Host -ForegroundColor cyan "The $($test.testname) passed for $dc"
+            }#elseif
     }#foreach
-
 }#foreach
-
 #endregion  
 
 #region check for shares
@@ -188,7 +177,7 @@ write-host -ForegroundColor red "Unable to find the SYSVOL share on $dc"
             write-host -ForegroundColor Red "There has been at least 1 consecutive replication failure in AD on $($singlerepresult.server) for the partition $($singlerepresult.partition)"
         }#if
          elseif ($singlerepresult.consecutivereplicationfailures -eq 0) {
-         write-host -ForegroundColor Cyan "There has not been 1 consecutive replication failure on $($singlerepresult.server) for the partition $($singlerepresult.partition)"
+         write-host -ForegroundColor Cyan "There was no replication failures on $($singlerepresult.server) for the partition $($singlerepresult.partition)"
         }#elseif
     }#foreach
 #endregion
