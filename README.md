@@ -1,10 +1,18 @@
 # get-adrephealth
 
-This is a very basic powershell script made for server 2012 R2 domain controllers. The tests include the following:
+This is a very basic powershell script made for server 2012 R2 domain controllers. 
+
+Where should I run the script?
+
+Run the script on a domain controller that has IP connecitivty to all other domain controllers.
+
+
+                                  
+The following tests are run:
 
 -Check primary DNS on DC(s)
 
--CHeck if AD services are running on DC(s)
+-Check if AD services are running on DC(s)
 
 -Basic Ping and DNS resolution tests
 
