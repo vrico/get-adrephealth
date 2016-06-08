@@ -185,10 +185,10 @@ write-host -ForegroundColor red "Unable to find the SYSVOL share on $dc"
     #$adrepresultsnumbers = $adrepresults | select  -ExpandProperty consecutivereplicationfailures
     foreach ($singlerepresult in $adrepresults) {
         if ($number.consecutivereplicationfailures -gt 1) {
-            write-host -ForegroundColor Red "There has been at least 1 consecutive replication failure in AD"
+            write-host -ForegroundColor Red "There has been at least 1 consecutive replication failure in AD on $($singlerepresult.server) for the partition $($singlerepresult.partition)"
         }#if
          elseif ($singlerepresult.consecutivereplicationfailures -eq 0) {
-         write-host -ForegroundColor Cyan "There has not been 1 consecutive replication failure on $($singlerepresult.server)"
+         write-host -ForegroundColor Cyan "There has not been 1 consecutive replication failure on $($singlerepresult.server) for the partition $($singlerepresult.partition)"
         }#elseif
     }#foreach
 #endregion
