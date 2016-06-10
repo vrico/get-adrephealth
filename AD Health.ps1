@@ -195,4 +195,13 @@ foreach ($sitereptime in $sitereptimeall) {
 #endregion 
 
 
-#by vrico, mixtape dropping midnight
+#region test secure channel with the PDC
+$pdc = get-addomain | select -ExpandProperty pdcemulator
+$pdcsplit = $pdc.split('.')
+$pdcfinal = $pdcsplit[0]
+foreach ($dc in $domaincontrollers) {
+   if ($dc -ne $pdcfinal) {
+        Invoke-Command -ComputerName $dc -ScriptBlock { Test-ComputerSecureChannel -Server $args[0] -Verbose } -ArgumentList $pdcfinal
+   }#if
+}#foreach
+#endregion 
