@@ -23,3 +23,5 @@
  - Check Site Link Replication settings (makes a recommendation)
 
  - Test Secure Channel of domain controllers with the PDC
+
+ - Check for Site Link Bridges (makes recommendation)
