@@ -21,3 +21,5 @@
  - Check for AD replication failures
 
  - Check Site Link Replication settings (makes a recommendation)
+
+ - Test Secure Channel of domain controllers with the PDC
